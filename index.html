@@ -2,122 +2,259 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ItsApi - Multi-API Testing Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ItsApi</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app">
+        <!-- iOS Style Header -->
         <header class="header">
-            <div class="container">
-                <h1 class="logo">ItsApi</h1>
-                <div class="theme-toggle">
-                    <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-container">
+                        <div class="logo-icon">⚡</div>
+                        <h1 class="logo-text">ItsApi</h1>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                    </button>
                 </div>
             </div>
         </header>
 
+        <!-- Main Content -->
         <main class="main">
             <div class="container">
+                <!-- Connection Status Card -->
+                <div class="status-card">
+                    <div class="status-indicator">
+                        <div class="status-dot" id="status-dot"></div>
+                        <span class="status-text" id="status-text">Disconnected</span>
+                    </div>
+                    <button id="connect-api" class="connect-btn">
+                        <span class="btn-icon">🔗</span>
+                        Connect
+                    </button>
+                </div>
+
                 <!-- API Configuration -->
-                <div class="card">
-                    <h2>API Configuration</h2>
-                    <div class="form-group">
-                        <label for="api-key">API Key</label>
-                        <div class="input-group">
-                            <input type="password" id="api-key" placeholder="Enter your API key">
-                            <button type="button" id="toggle-api-key" class="btn-secondary">👁️</button>
+                <div class="config-card card">
+                    <div class="card-header">
+                        <h2 class="card-title">API Configuration</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label class="form-label">API Key</label>
+                            <div class="input-container">
+                                <input type="password" id="api-key" class="form-input" placeholder="Enter your API key">
+                                <button type="button" id="toggle-api-key" class="input-action-btn">
+                                    <span class="btn-icon">👁️</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Endpoint Type</label>
+                            <div class="segmented-control">
+                                <input type="radio" id="chat-endpoint" name="endpoint-type" value="chat" checked>
+                                <label for="chat-endpoint" class="segment-label">
+                                    <span class="segment-icon">💬</span>
+                                    Chat
+                                </label>
+                                <input type="radio" id="image-endpoint" name="endpoint-type" value="images">
+                                <label for="image-endpoint" class="segment-label">
+                                    <span class="segment-icon">🖼️</span>
+                                    Images
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="endpoint-type">Endpoint Type</label>
-                        <select id="endpoint-type">
-                            <option value="chat">Chat Completions</option>
-                            <option value="images">Image Generation</option>
-                        </select>
-                    </div>
-                    <button id="connect-api" class="btn-primary">Connect & Fetch Models</button>
                 </div>
 
                 <!-- Chat Completions Section -->
-                <div id="chat-section" class="card">
-                    <h2>Chat Completions</h2>
-                    <div class="form-group">
-                        <label for="model-select">Model</label>
-                        <select id="model-select">
-                            <option value="">Select a model</option>
-                        </select>
+                <div id="chat-section" class="endpoint-section card">
+                    <div class="card-header">
+                        <h2 class="card-title">Chat Completions</h2>
+                        <div class="card-badge">OpenAI Compatible</div>
                     </div>
-                    <div class="form-group">
-                        <label for="message-input">Message</label>
-                        <textarea id="message-input" placeholder="Enter your message" rows="4"></textarea>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label class="form-label">Model</label>
+                            <select id="model-select" class="form-select">
+                                <option value="">Select a model</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <div class="textarea-container">
+                                <textarea id="message-input" class="form-textarea" placeholder="Enter your message" rows="4"></textarea>
+                                <div class="textarea-footer">
+                                    <span class="char-count" id="char-count">0 characters</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Max Tokens</label>
+                                <div class="slider-container">
+                                    <input type="range" id="max-tokens-slider" class="form-slider" min="1" max="4000" value="150">
+                                    <input type="number" id="max-tokens" class="form-input-small" value="150" min="1" max="4000">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Temperature</label>
+                                <div class="slider-container">
+                                    <input type="range" id="temperature-slider" class="form-slider" min="0" max="2" step="0.1" value="0.7">
+                                    <input type="number" id="temperature" class="form-input-small" value="0.7" min="0" max="2" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="send-request" class="btn-primary">
+                                <span class="btn-icon">🚀</span>
+                                Send Request
+                            </button>
+                            <button id="clear-request" class="btn-secondary">
+                                <span class="btn-icon">🗑️</span>
+                                Clear
+                            </button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="max-tokens">Max Tokens</label>
-                        <input type="number" id="max-tokens" value="150" min="1" max="4000">
-                    </div>
-                    <div class="form-group">
-                        <label for="temperature">Temperature</label>
-                        <input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1">
-                    </div>
-                    <button id="send-request" class="btn-primary">Send Request</button>
-                    <button id="clear-request" class="btn-secondary">Clear</button>
                 </div>
 
                 <!-- Image Generation Section -->
-                <div id="image-section" class="card" style="display: none;">
-                    <h2>Image Generation</h2>
-                    <div class="form-group">
-                        <label for="image-model-select">Model</label>
-                        <select id="image-model-select">
-                            <option value="">Select a model</option>
-                        </select>
+                <div id="image-section" class="endpoint-section card" style="display: none;">
+                    <div class="card-header">
+                        <h2 class="card-title">Image Generation</h2>
+                        <div class="card-badge">AI Powered</div>
                     </div>
-                    <div class="form-group">
-                        <label for="image-prompt">Prompt</label>
-                        <textarea id="image-prompt" placeholder="Describe the image you want to generate" rows="4"></textarea>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label class="form-label">Model</label>
+                            <select id="image-model-select" class="form-select">
+                                <option value="">Select a model</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Prompt</label>
+                            <div class="textarea-container">
+                                <textarea id="image-prompt" class="form-textarea" placeholder="Describe the image you want to generate" rows="4"></textarea>
+                                <div class="textarea-footer">
+                                    <span class="char-count" id="image-char-count">0 characters</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Size</label>
+                            <div class="size-options">
+                                <input type="radio" id="size-1024" name="image-size" value="1024x1024" checked>
+                                <label for="size-1024" class="size-option">
+                                    <span class="size-label">1024×1024</span>
+                                    <span class="size-desc">Square</span>
+                                </label>
+                                <input type="radio" id="size-512" name="image-size" value="512x512">
+                                <label for="size-512" class="size-option">
+                                    <span class="size-label">512×512</span>
+                                    <span class="size-desc">Small</span>
+                                </label>
+                                <input type="radio" id="size-256" name="image-size" value="256x256">
+                                <label for="size-256" class="size-option">
+                                    <span class="size-label">256×256</span>
+                                    <span class="size-desc">Tiny</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="generate-image" class="btn-primary">
+                                <span class="btn-icon">🎨</span>
+                                Generate Image
+                            </button>
+                            <button id="clear-image-request" class="btn-secondary">
+                                <span class="btn-icon">🗑️</span>
+                                Clear
+                            </button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="image-size">Size</label>
-                        <select id="image-size">
-                            <option value="1024x1024">1024x1024</option>
-                            <option value="512x512">512x512</option>
-                            <option value="256x256">256x256</option>
-                        </select>
-                    </div>
-                    <button id="generate-image" class="btn-primary">Generate Image</button>
-                    <button id="clear-image-request" class="btn-secondary">Clear</button>
                 </div>
 
                 <!-- Response Section -->
-                <div class="card">
-                    <h2>Response</h2>
-                    <div id="loading" class="loading" style="display: none;">
-                        <div class="spinner"></div>
-                        <span>Processing...</span>
-                    </div>
-                    <div id="response-container">
-                        <pre id="response-output">Response will appear here...</pre>
-                        <div id="image-output" style="display: none;">
-                            <img id="generated-image" alt="Generated image" style="max-width: 100%; height: auto; border-radius: 8px;">
+                <div class="response-card card">
+                    <div class="card-header">
+                        <h2 class="card-title">Response</h2>
+                        <div class="response-actions">
+                            <button id="copy-response" class="action-btn" style="display: none;">
+                                <span class="btn-icon">📋</span>
+                                Copy
+                            </button>
+                            <button id="download-image" class="action-btn" style="display: none;">
+                                <span class="btn-icon">⬇️</span>
+                                Download
+                            </button>
                         </div>
                     </div>
-                    <button id="copy-response" class="btn-secondary" style="display: none;">Copy Response</button>
+                    <div class="card-content">
+                        <!-- Loading State -->
+                        <div id="loading" class="loading-state" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Processing...</span>
+                        </div>
+
+                        <!-- JSON Response -->
+                        <div id="response-container" class="response-container">
+                            <pre id="response-output" class="response-text">Response will appear here...</pre>
+                        </div>
+
+                        <!-- Image Response -->
+                        <div id="image-response" class="image-response" style="display: none;">
+                            <div class="image-container">
+                                <img id="generated-image" alt="Generated image" class="generated-image">
+                                <div class="image-overlay">
+                                    <div class="image-actions">
+                                        <button class="image-action-btn" id="view-fullscreen">
+                                            <span class="btn-icon">🔍</span>
+                                        </button>
+                                        <button class="image-action-btn" id="share-image">
+                                            <span class="btn-icon">📤</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="image-info">
+                                <span class="image-size-display" id="image-size-display"></span>
+                                <span class="image-model-display" id="image-model-display"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
 
+        <!-- Footer -->
         <footer class="footer">
-            <div class="container">
-                <p>ItsApi</p>
+            <div class="footer-content">
+                <p class="footer-text">ItsApi</p>
             </div>
         </footer>
     </div>
 
+    <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- Fullscreen Image Modal -->
+    <div id="fullscreen-modal" class="fullscreen-modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" id="close-fullscreen">
+                <span class="btn-icon">✕</span>
+            </button>
+            <img id="fullscreen-image" class="fullscreen-image" alt="Fullscreen image">
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
