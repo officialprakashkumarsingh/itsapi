@@ -599,27 +599,14 @@
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-md);
 }
 
-.footer-left p {
-    margin-bottom: var(--spacing-xs);
-}
-
-.footer-subtitle {
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
+.footer-center p {
     margin-bottom: 0;
-}
-
-.footer-stats {
-    display: flex;
-    gap: var(--spacing-lg);
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
+    font-weight: 600;
+    color: hsl(var(--foreground));
 }
 
 /* Mobile Navigation */
