@@ -416,7 +416,7 @@ label {
 /* Models Grid */
 .models-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1rem;
 }
 
@@ -425,12 +425,15 @@ label {
     border: 1px solid hsl(var(--border));
     border-radius: calc(var(--radius) - 2px);
     background-color: hsl(var(--card));
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
+    position: relative;
 }
 
 .model-card:hover {
     border-color: hsl(var(--ring));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
 }
 
 .model-card.selected {
@@ -438,15 +441,98 @@ label {
     background-color: hsl(var(--primary) / 0.05);
 }
 
+.model-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
 .model-name {
     font-weight: 500;
     margin-bottom: 0.25rem;
     color: hsl(var(--card-foreground));
+    flex: 1;
+    margin-right: 0.5rem;
 }
 
 .model-owner {
     font-size: 0.75rem;
     color: hsl(var(--muted-foreground));
+    margin-bottom: 0.75rem;
+}
+
+.model-status {
+    font-size: 1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.model-status.status-online {
+    background-color: hsl(var(--success) / 0.1);
+}
+
+.model-status.status-offline {
+    background-color: hsl(var(--destructive) / 0.1);
+}
+
+.model-status.status-error {
+    background-color: hsl(25 70% 50% / 0.1);
+}
+
+.model-status.status-unknown {
+    background-color: hsl(var(--muted) / 0.5);
+}
+
+.model-status.status-checking {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.model-details {
+    border-top: 1px solid hsl(var(--border));
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.status-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.status-text:has(.status-online) {
+    color: hsl(var(--success));
+}
+
+.status-text:has(.status-offline) {
+    color: hsl(var(--destructive));
+}
+
+.status-text:has(.status-error) {
+    color: hsl(25 70% 50%);
+}
+
+.last-check {
+    font-size: 0.625rem;
+    color: hsl(var(--muted-foreground));
+    opacity: 0.8;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
 }
 
 /* Response Container */
