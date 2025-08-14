@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ItsApi - Multi-API Testing Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>ItsApi</h1>
+                        <span class="badge">Multi-API Platform</span>
+                    </div>
+                    <div class="header-actions">
+                        <button id="theme-toggle" class="btn btn-ghost btn-icon" aria-label="Toggle theme">
+                            <svg class="icon theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                            <svg class="icon theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- API Configuration Section -->
+                <section class="section">
+                    <div class="section-header">
+                        <h2>API Configuration</h2>
+                        <p>Configure your API settings and test endpoints</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Connection Settings</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="form-group">
+                                <label for="api-key">API Key</label>
+                                <input type="password" id="api-key" class="input" placeholder="Enter your API key" value="ahamaibyprakash25">
+                                <button type="button" id="toggle-api-key" class="btn btn-ghost btn-sm">Show</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="base-url">Base URL</label>
+                                <input type="url" id="base-url" class="input" value="https://ahamai-api.officialprakashkrsingh.workers.dev" readonly>
+                            </div>
+                            <div class="form-actions">
+                                <button id="test-connection" class="btn btn-primary">Test Connection</button>
+                                <button id="fetch-models" class="btn btn-secondary">Fetch Models</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Models Section -->
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Available Models</h2>
+                        <p>Models fetched from /v1/models endpoint</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Model List</h3>
+                            <span id="models-count" class="badge">0 models</span>
+                        </div>
+                        <div class="card-content">
+                            <div id="models-grid" class="models-grid">
+                                <div class="loading-state">
+                                    <div class="spinner"></div>
+                                    <p>Click "Fetch Models" to load available models</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- API Testing Section -->
+                <section class="section">
+                    <div class="section-header">
+                        <h2>API Testing</h2>
+                        <p>Test different API endpoints with real requests</p>
+                    </div>
+                    
+                    <div class="api-testing-layout">
+                        <!-- Request Panel -->
+                        <div class="card request-panel">
+                            <div class="card-header">
+                                <h3>Request Configuration</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="form-group">
+                                    <label for="endpoint-select">Endpoint</label>
+                                    <select id="endpoint-select" class="select">
+                                        <option value="/v1/models">GET /v1/models</option>
+                                        <option value="/v1/chat/completions">POST /v1/chat/completions</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Chat Completions Parameters -->
+                                <div id="chat-params" class="endpoint-params">
+                                    <div class="form-group">
+                                        <label for="model-select">Model</label>
+                                        <select id="model-select" class="select">
+                                            <option value="gpt-4o-mini">gpt-4o-mini</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="user-message">Message</label>
+                                        <textarea id="user-message" class="textarea" rows="3" placeholder="Enter your message...">Hello, how are you?</textarea>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="max-tokens">Max Tokens</label>
+                                            <input type="number" id="max-tokens" class="input" value="150" min="1" max="4000">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="temperature">Temperature</label>
+                                            <input type="number" id="temperature" class="input" value="0.7" min="0" max="2" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button id="send-request" class="btn btn-primary">Send Request</button>
+                                    <button id="clear-response" class="btn btn-ghost">Clear Response</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Response Panel -->
+                        <div class="card response-panel">
+                            <div class="card-header">
+                                <h3>Response</h3>
+                                <div class="response-status" id="response-status"></div>
+                            </div>
+                            <div class="card-content">
+                                <div id="response-container" class="response-container">
+                                    <div class="empty-state">
+                                        <svg class="icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                            <polyline points="14,2 14,8 20,8"></polyline>
+                                        </svg>
+                                        <p>No response yet</p>
+                                        <p class="text-muted">Send a request to see the response</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2024 ItsApi - Multi-API Testing Platform</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
