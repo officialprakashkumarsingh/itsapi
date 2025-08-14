@@ -1,21 +1,35 @@
-// API Configuration
-const API_CONFIG = {
-    baseUrl: 'https://ahamai-api.officialprakashkrsingh.workers.dev',
-    apiKey: 'ahamaibyprakash25',
-    endpoints: {
-        models: '/v1/models',
-        chatCompletions: '/v1/chat/completions'
-    }
-};
+// Enhanced ItsApi Application
+// Import the main application module
+import('./js/app.js').then(({ default: app }) => {
+    console.log('✅ ItsApi application loaded successfully');
+}).catch(error => {
+    console.error('❌ Failed to load ItsApi application:', error);
+    
+    // Fallback for browsers that don't support ES modules
+    console.log('🔄 Loading fallback version...');
+    loadFallbackVersion();
+});
 
-// Application State
-const appState = {
-    models: [],
-    selectedModel: 'gpt-4o-mini',
-    theme: 'system',
-    modelStatuses: new Map(),
-    lastStatusCheck: null
-};
+// Fallback for older browsers or when modules fail to load
+function loadFallbackVersion() {
+    // Simplified version of the original script for compatibility
+    const API_CONFIG = {
+        baseUrl: 'https://ahamai-api.officialprakashkrsingh.workers.dev',
+        apiKey: 'ahamaibyprakash25',
+        endpoints: {
+            models: '/v1/models',
+            chatCompletions: '/v1/chat/completions'
+        }
+    };
+
+    const appState = {
+        models: [],
+        selectedModel: 'gpt-4o-mini',
+        theme: 'system',
+        modelStatuses: new Map(),
+        lastStatusCheck: null,
+        keepAliveInterval: null
+    };
 
 // DOM Elements
 const elements = {
@@ -251,6 +265,55 @@ const modelStatusChecker = {
                 this.checkAllModels();
             }
         }, 30000);
+    },
+
+    // Keep-alive functionality for Render.com
+    startKeepAlive() {
+        console.log('🚀 Starting keep-alive requests to prevent API sleep...');
+        
+        // Send keep-alive request immediately
+        this.sendKeepAliveRequest();
+        
+        // Then send every 30 seconds
+        appState.keepAliveInterval = setInterval(() => {
+            this.sendKeepAliveRequest();
+        }, 30000);
+    },
+
+    async sendKeepAliveRequest() {
+        try {
+            const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.models}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${elements.apiKeyInput.value || API_CONFIG.apiKey}`,
+                    'X-Keep-Alive': 'true'
+                }
+            });
+
+            if (response.ok) {
+                console.log('💚 Keep-alive request successful');
+                // Update connection status
+                const statusDot = document.querySelector('.status-dot');
+                const statusText = document.querySelector('.status-text');
+                if (statusDot && statusText) {
+                    statusDot.classList.add('connected');
+                    statusDot.classList.remove('error');
+                    statusText.textContent = 'Connected';
+                }
+            } else {
+                console.warn('⚠️ Keep-alive request failed:', response.status);
+            }
+        } catch (error) {
+            console.warn('❌ Keep-alive error:', error.message);
+        }
+    },
+
+    stopKeepAlive() {
+        if (appState.keepAliveInterval) {
+            clearInterval(appState.keepAliveInterval);
+            appState.keepAliveInterval = null;
+            console.log('⏹️ Keep-alive stopped');
+        }
     },
 
     updateModelsDisplay() {
@@ -584,12 +647,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start real-time monitoring
     modelStatusChecker.startRealTimeMonitoring();
     
+    // Start keep-alive for Render.com hosting
+    modelStatusChecker.startKeepAlive();
+    
     // Auto-fetch models on load
     setTimeout(() => {
         apiManager.fetchModels();
     }, 1000);
     
-    console.log('ItsApi initialized successfully');
+    console.log('ItsApi initialized successfully with keep-alive enabled');
 });
 
 // Global error handler
@@ -597,11 +663,14 @@ window.addEventListener('error', (event) => {
     console.error('Global error:', event.error);
 });
 
-// Expose API for debugging
-window.ItsApi = {
-    appState,
-    apiManager,
-    themeManager,
-    modelStatusChecker,
-    utils
-};
+    // Expose API for debugging
+    window.ItsApi = {
+        appState,
+        apiManager,
+        themeManager,
+        modelStatusChecker,
+        utils
+    };
+
+    console.log('✅ Fallback ItsApi initialized successfully');
+}
